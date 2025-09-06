@@ -56,6 +56,20 @@ param(
   [switch]$Revert
 )
 
+# If ProjectPath is default or not provided, try to locate the function project relative to this script (parent folder)
+if ($ProjectPath -eq '.' -or [string]::IsNullOrWhiteSpace($ProjectPath)) {
+  try {
+    $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+    $candidate = Join-Path $scriptDir '..'
+    $resolved = Resolve-Path $candidate -ErrorAction Stop
+    $ProjectPath = $resolved.Path
+    Write-Info "Auto-detected ProjectPath: $ProjectPath"
+  } catch {
+    Write-Warn "Could not auto-detect ProjectPath; using current directory '.'"
+  }
+}
+
+# logging helpers (define immediately so aut-detect can use them)
 function Write-Info([string]$m){ Write-Host ('[info] {0}' -f $m) -ForegroundColor Cyan }
 function Write-Warn([string]$m){ Write-Host ('[warn] {0}' -f $m) -ForegroundColor Yellow }
 function Write-Err ([string]$m){ Write-Host ('[err ] {0}' -f $m) -ForegroundColor Red }
@@ -70,17 +84,6 @@ if (-not (Get-Command func -ErrorAction SilentlyContinue)) {
   exit 1
 }
 
-# 1) Optional Azurite starten
-if ($StartAzurite) {
-  $azScript = Join-Path $full "tools\Start-Azurite.ps1"
-  if (Test-Path $azScript) {
-    Write-Info "Starte Azurite (tools\Start-Azurite.ps1)…"
-    Start-Process pwsh -ArgumentList "-NoProfile","-ExecutionPolicy","Bypass","-File",$azScript | Out-Null
-  } else {
-    Write-Warn "tools\Start-Azurite.ps1 nicht gefunden. Versuche 'azurite' direkt..."
-    Start-Process "azurite" -ArgumentList "--silent","--location","..\.azurite","--debug",".\.azurite\debug.log","--blobHost","127.0.0.1","--queueHost","127.0.0.1","--tableHost","127.0.0.1" | Out-Null
-  }
-}
 
 # 2) Optional FastCron / Revert
 $lsPath = Join-Path $full "local.settings.json"
@@ -145,15 +148,39 @@ if ($OpenVSCode) {
   }
 }
 
-# 6) Functions Host starten (foreground)
+## 6) Functions Host starten (foreground)
 Write-Host ""
-Write-Host "──────────────────────────────────────────────────────────────" -ForegroundColor Gray
-Write-Host " WARTEMODUS AKTIV – Host startet jetzt im DEBUG-Modus." -ForegroundColor Green
-Write-Host "  • Triggere den Timer (*/10 oder runOnStartup) oder" -ForegroundColor Gray
-Write-Host "  • löse per Admin-API aus: " -ForegroundColor Gray
-Write-Host "    Invoke-RestMethod -Method POST -Uri http://127.0.0.1:7071/admin/functions/TimerOrchestrator -ContentType 'application/json' -Body (@{ input = '' } | ConvertTo-Json)" -ForegroundColor DarkGray
-Write-Host "──────────────────────────────────────────────────────────────" -ForegroundColor Gray
+Write-Host '----------------------------------------------------------------' -ForegroundColor Gray
+Write-Host ' WARTEMODUS AKTIV - Host startet jetzt im DEBUG-Modus.' -ForegroundColor Green
+Write-Host '  * Triggere den Timer (*/10 oder runOnStartup) oder' -ForegroundColor Gray
+Write-Host '  * loese per Admin-API aus:' -ForegroundColor Gray
+Write-Host '----------------------------------------------------------------' -ForegroundColor Gray
+Write-Host ""
+
+# choose port (start at 7071) and find a free port if needed
+$selectedPort = 7071
+function Test-PortFree($port) {
+  try {
+    $out = netstat -ano | Select-String -Pattern ":$port\s"
+    return -not $out
+  } catch { return $false }
+}
+
+if (-not (Test-PortFree $selectedPort)) {
+  Write-Warn "Port $selectedPort is unavailable. Searching for a free port..."
+  $found = $false
+  for ($p = $selectedPort + 1; $p -le ($selectedPort + 10); $p++) {
+    if (Test-PortFree $p) { $selectedPort = $p; $found = $true; break }
+  }
+  if ($found) { Write-Info "Using fallback port: $selectedPort" } else { Write-Err "No free port found in range $($selectedPort)..$($selectedPort+10). Close the process using the port or specify a port with the script."; exit 1 }
+}
+
+Write-Host "Admin-API endpoint (for triggering TimerOrchestrator):" -ForegroundColor DarkGray
+Write-Host "    Invoke-RestMethod -Method POST -Uri http://127.0.0.1:$selectedPort/admin/functions/TimerOrchestrator -ContentType 'application/json' -Body (@{ input = '' } | ConvertTo-Json)" -ForegroundColor DarkGray
 Write-Host ""
 
 # Start
-& func host start
+Write-Info "Starting Functions host: func host start --port $selectedPort"
+# Ensure worker runtime is set to PowerShell to avoid interactive language prompt
+$env:FUNCTIONS_WORKER_RUNTIME = 'powershell'
+& func host start --port $selectedPort

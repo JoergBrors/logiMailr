@@ -1,18 +1,22 @@
 {
   "IsEncrypted": false,
   "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsStorage": "",
+    "LOGIMAILR_STORAGE_CONNECTION_STRING": "",
     "FUNCTIONS_WORKER_RUNTIME": "powershell",
-    "TimerOrchestrator_Schedule": "0 0 7 * * *",
+    "TimerOrchestrator_Schedule": "*/10 * * * * *",
     "LOGIMAILR_STORAGE_URL": "http://127.0.0.1:10000/devstoreaccount1",
     "LOGIMAILR_STORAGE_ACCOUNT": "devstoreaccount1",
-    "LOGIMAILR_STORAGE_KEY": "AzuriteKeyHere",
+    "LOGIMAILR_STORAGE_KEY": "",
     "LOGIMAILR_BLOB_CONTAINER_CONTROL": "control",
     "LOGIMAILR_BLOB_CONTAINER_INPUT": "input",
     "LOGIMAILR_BLOB_CONTAINER_OUTPUT": "output",
     "LOGIMAILR_BLOB_CONTAINER_RUNS": "runs",
-    "LOGIMAILR_MAIL_SENDER": "security-reports@contoso.com",
-    "LOGIMAILR_SEND_MODE": "File",
-    "LOGIMAILR_TEST_OUTDIR": "./out-mail"
+    "LOGIMAILR_MAIL_SENDER": "",
+    "LOGIMAILR_SEND_MODE": "file",
+    "LOGIMAILR_TEST_OUTDIR": "./out-mail",
+    "AZ_TENANT_ID": "",
+    "AZ_CLIENT_ID": "",
+    "AZ_CLIENT_SECRET": ""
   }
 }
