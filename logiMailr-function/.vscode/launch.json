@@ -1,0 +1,19 @@
+{
+ "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Azure Functions (PowerShell, NamedPipe)",
+      "type": "PowerShell",
+      "request": "attach",
+      "customPipeName": "AzureFunctionsPSWorker",
+      "preLaunchTask": "func: host start (Debug)"
+    },
+    {
+      "name": "Attach to Azure Functions (PowerShell, TCP 55888)",
+      "type": "PowerShell",
+      "request": "attach",
+      "port": 55888,
+      "preLaunchTask": "func: host start (Debug TCP)"
+    }
+  ]
+}

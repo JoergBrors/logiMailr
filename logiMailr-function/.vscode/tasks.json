@@ -1,6 +1,35 @@
 {
   "version": "2.0.0",
   "tasks": [
+     {
+      "label": "func: host start (Debug)",
+      "type": "shell",
+      "command": "func host start",
+      "isBackground": true,
+      "problemMatcher": "$func-watch",
+      "options": {
+        "env": {
+          "languageWorkers__powershell__debug__transport": "NamedPipe",
+          "languageWorkers__powershell__debug__waitForDebugger": "true",
+          "AZURE_FUNCTIONS_ENVIRONMENT": "Development"
+        }
+      }
+    },
+    {
+      "label": "func: host start (Debug TCP)",
+      "type": "shell",
+      "command": "func host start",
+      "isBackground": true,
+      "problemMatcher": "$func-watch",
+      "options": {
+        "env": {
+          "languageWorkers__powershell__debug__transport": "tcp",
+          "languageWorkers__powershell__debug__port": "55888",
+          "languageWorkers__powershell__debug__waitForDebugger": "true",
+          "AZURE_FUNCTIONS_ENVIRONMENT": "Development"
+        }
+      }
+    },
     {
       "label": "Start Azurite (Blob/Queue/Table)",
       "type": "shell",

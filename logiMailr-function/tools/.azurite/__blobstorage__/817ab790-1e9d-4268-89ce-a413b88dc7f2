@@ -1,0 +1,56 @@
+{"Last":"0001-01-01T01:00:00+01:00","Next":"2025-09-07T07:00:00+02:00","LastUpdated":"2025-09-06T12:23:53.2823813+02:00"}{
+  "name": "Security Weekly",
+  "enabled": true,
+  "sources": [
+    {
+      "type": "LogAnalytics",
+      "module": "kql/signins-anomalies.json"
+    },
+    {
+      "type": "DefenderAH",
+      "module": "kql/defender-suspicious-process.json"
+    }
+  ],
+  "output": {
+    "template": "templates/security-summary-v1.json"
+  },
+  "mail": {
+    "sender": "security-reports@contoso.com",
+    "recipients": [
+      "soc@contoso.com",
+      "itsec@contoso.com"
+    ],
+    "subject": "Security Weekly \u2013 {Date:yyyy-MM-dd}"
+  }
+}{
+  "name": "Anomalous sign-ins",
+  "queryLanguage": "KQL",
+  "source": "LogAnalytics",
+  "timeRange": "P1D",
+  "workspaceId": "<YOUR-LAW-ID>",
+  "kql": "SigninLogs | take 25"
+}{
+  "name": "Suspicious Process",
+  "queryLanguage": "KQL",
+  "source": "DefenderAH",
+  "timeRange": "P7D",
+  "kql": "DeviceProcessEvents | where Timestamp >= ago(7d) | summarize count() by ProcessCommandLine | top 10 by count_"
+}{
+  "title": "Security Summary",
+  "layout": "html",
+  "sections": [
+    {
+      "type": "table",
+      "title": "Anomalous Sign-ins",
+      "bind": "LogAnalytics[0]"
+    },
+    {
+      "type": "table",
+      "title": "Top Suspicious Processes",
+      "bind": "DefenderAH[0]"
+    }
+  ],
+  "style": {
+    "brandColor": "#0078D4"
+  }
+}{"Last":"2025-09-06T12:47:59.5759867+02:00","Next":"2025-09-07T07:00:00+02:00","LastUpdated":"2025-09-06T12:47:59.5759867+02:00"}{"Last":"2025-09-06T13:01:27.6293883+02:00","Next":"2025-09-07T07:00:00+02:00","LastUpdated":"2025-09-06T13:01:27.6293883+02:00"}

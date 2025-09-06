@@ -1,0 +1,28 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start PHP dev server (8000)",
+			"type": "shell",
+			"command": "C:/Program Files/php/php.exe",
+			"args": [
+				"-S",
+				"127.0.0.1:8000",
+				"-t",
+				"${workspaceFolder}"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"type": "func",
+			"label": "func: host start",
+			"command": "host start",
+			"problemMatcher": "$func-powershell-watch",
+			"isBackground": true,
+			"options": {
+				"cwd": "${workspaceFolder}/logiMailr-function"
+			}
+		}
+	]
+}
