@@ -44,7 +44,7 @@ if ($tenantEnv -and $clientEnv -and $secretEnv) {
   }
 }
 
-$clientAppId = '83a53e11-7af2-442f-9e12-c72f4f26f22e'
+$clientAppId = '30808d99-543c-44c5-be32-47e3358fce79'
 $clientSp = Get-MgServicePrincipal -Filter "appId eq '$clientAppId'"
 $mtpSp    = Get-MgServicePrincipal -Filter "appId eq 'fc780465-2017-40d4-a0c5-307022471b92'"
 # Microsoft Graph service principal (regular graph permissions live here)

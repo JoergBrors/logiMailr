@@ -4,9 +4,7 @@
       "name": "Timer",
       "type": "timerTrigger",
       "direction": "in",
-      "schedule": "%TimerOrchestrator_Schedule%",
-      "runOnStartup": true
+      "schedule": "0 30 7 * * 1"
     }
-  ],
-  "scriptFile": "run.ps1"
+  ]
 }
