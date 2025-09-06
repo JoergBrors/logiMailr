@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Azurite (Blob/Queue/Table)",
+      "type": "shell",
+      "command": "azurite --silent --location ./.azurite --debug ./.azurite/debug.log",
+      "problemMatcher": [],
+      "group": "none",
+      "detail": "Runs Azurite locally for Blob/Queue/Table on default ports 10000/10001/10002"
+    },
+    {
+      "label": "Clean Azurite data",
+      "type": "shell",
+      "command": "powershell -NoProfile -Command \"Remove-Item -Recurse -Force .\\.azurite\"",
+      "problemMatcher": []
+    }
+  ]
+}
