@@ -23,8 +23,9 @@ try {
                 'LogAnalytics' {
                     $mod = Get-BlobJson -Container (Get-Env -Name 'LOGIMAILR_BLOB_CONTAINER_INPUT' -Default 'input') -BlobName $src.module
                     $kql = $mod.kql
-                    $timespan = $mod.timeRange ?? 'P1D'
-                    $workspace = $mod.workspaceId ?? (Get-Env -Name 'LOGIMAILR_WORKSPACE_ID')
+                    # PowerShell-compatible defaulting
+                    if ($mod.PSObject.Properties.Name -contains 'timeRange' -and $mod.timeRange) { $timespan = $mod.timeRange } else { $timespan = 'P1D' }
+                    if ($mod.PSObject.Properties.Name -contains 'workspaceId' -and $mod.workspaceId) { $workspace = $mod.workspaceId } else { $workspace = (Get-Env -Name 'LOGIMAILR_WORKSPACE_ID') }
                     if (-not $workspace) { throw 'WorkspaceId not set in module or env LOGIMAILR_WORKSPACE_ID' }
                     $resp = Invoke-LogAnalyticsQuery -WorkspaceId $workspace -Kql $kql -Timespan $timespan
                     $results.LogAnalytics += $resp
@@ -32,7 +33,7 @@ try {
                 'DefenderAH' {
                     $mod = Get-BlobJson -Container (Get-Env -Name 'LOGIMAILR_BLOB_CONTAINER_INPUT' -Default 'input') -BlobName $src.module
                     $kql = $mod.kql
-                    $resp = Invoke-DefenderAHQuery -Kql $kql
+                    $resp = Invoke-DefenderAHQuery -Kql $kql -AppOnly
                     $results.DefenderAH += $resp
                 }
                 default {
@@ -53,8 +54,12 @@ try {
         $runLog = [pscustomobject]@{
             control   = $c.Name
             timestamp = (Get-Date).ToString('o')
-            rowsLA    = ($results.LogAnalytics | ForEach-Object { $_.tables[0].rows.Count } | Measure-Object -Sum).Sum
-            rowsAH    = ($results.DefenderAH | ForEach-Object { $_.Results.Count } | Measure-Object -Sum).Sum
+            rowsLA    = (($results.LogAnalytics | ForEach-Object {
+                            if ($null -ne $_ -and $_.tables -and $_.tables.Count -gt 0 -and $_.tables[0].rows) { $_.tables[0].rows.Count } else { 0 }
+                         } | Measure-Object -Sum).Sum)
+            rowsAH    = (($results.DefenderAH | ForEach-Object {
+                            if ($null -ne $_ -and $_.Results) { $_.Results.Count } else { 0 }
+                         } | Measure-Object -Sum).Sum)
             recipients= ($recips -join ', ')
         } | ConvertTo-Json -Depth 5
         $runBlob = '{0:yyyy-MM-dd}/run-{1}.json' -f (Get-Date), ($c.Name -replace '.json$','')

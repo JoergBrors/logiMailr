@@ -17,8 +17,7 @@
   "mail": {
     "sender": "security-reports@contoso.com",
     "recipients": [
-      "soc@contoso.com",
-      "itsec@contoso.com"
+      "joerg@brors.net"
     ],
     "subject": "Security Weekly \u2013 {Date:yyyy-MM-dd}"
   }

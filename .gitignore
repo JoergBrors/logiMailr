@@ -15,6 +15,9 @@ Azurite*
 *.userosscache
 *.sln.docstates
 *.env
+Az.*
+Microsoft.Graph.*
+out-mail/*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

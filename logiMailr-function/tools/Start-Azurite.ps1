@@ -1,5 +1,5 @@
 param(
-  [string]$Location = "..\.azurite"
+  [string]$Location = "C:\azurite"
 )
 Write-Host ('Starting Azurite at {0} ...' -f $Location)
 if (-not (Test-Path $Location)) { New-Item -ItemType Directory -Path $Location | Out-Null }

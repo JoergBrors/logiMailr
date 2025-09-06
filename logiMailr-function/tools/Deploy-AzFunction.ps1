@@ -8,8 +8,16 @@ param(
 
 Write-Host ('Deploying to RG {0} in {1}...' -f $ResourceGroup,$Location)
 
-# Login if needed
-try { (Get-AzContext) | Out-Null } catch { Connect-AzAccount | Out-Null }
+# Login if needed: prefer Microsoft Graph interactive sign-in when available, otherwise Az
+try {
+    if (Get-Command -Name 'Connect-MgGraph' -ErrorAction SilentlyContinue) {
+        try { Get-MgUser -Top 1 -ErrorAction Stop | Out-Null } catch { Connect-MgGraph -Scopes 'User.Read' | Out-Null }
+    } else {
+        try { (Get-AzContext) | Out-Null } catch { Connect-AzAccount | Out-Null }
+    }
+} catch {
+    Write-Host "Warning: interactive login failed: $($_.Exception.Message)"
+}
 
 # Create RG
 if (-not (Get-AzResourceGroup -Name $ResourceGroup -ErrorAction SilentlyContinue)) {

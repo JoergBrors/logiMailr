@@ -1,8 +1,8 @@
 {
-  "name": "Anomalous sign-ins",
+  "name": "Anomalous Usage",
   "queryLanguage": "KQL",
   "source": "LogAnalytics",
   "timeRange": "P1D",
-  "workspaceId": "<YOUR-LAW-ID>",
-  "kql": "SigninLogs | take 25"
+  "workspaceId": "2de00428-9f53-4237-bc3b-1088afce50c6",
+  "kql": "Usage | take 25"
 }

@@ -1,7 +1,7 @@
 {
-  "name": "Suspicious Process",
+  "name": "Email Quarantined Messages",
   "queryLanguage": "KQL",
   "source": "DefenderAH",
   "timeRange": "P7D",
-  "kql": "DeviceProcessEvents | where Timestamp >= ago(7d) | summarize count() by ProcessCommandLine | top 10 by count_"
+  "kql": "EmailEvents | where Timestamp >= ago(7d) | where coalesce(LatestDeliveryLocation, DeliveryLocation) == \"Quarantine\" | project Timestamp, RecipientEmailAddress, SenderFromAddress, Subject,LatestDeliveryAction,ThreatTypes | order by Timestamp desc"
 }
