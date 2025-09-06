@@ -1,0 +1,7 @@
+{
+  "name": "Suspicious Process",
+  "queryLanguage": "KQL",
+  "source": "DefenderAH",
+  "timeRange": "P7D",
+  "kql": "DeviceProcessEvents | where Timestamp >= ago(7d) | summarize count() by ProcessCommandLine | top 10 by count_"
+}

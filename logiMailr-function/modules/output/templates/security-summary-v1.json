@@ -1,0 +1,19 @@
+{
+  "title": "Security Summary",
+  "layout": "html",
+  "sections": [
+    {
+      "type": "table",
+      "title": "Anomalous Sign-ins",
+      "bind": "LogAnalytics[0]"
+    },
+    {
+      "type": "table",
+      "title": "Top Suspicious Processes",
+      "bind": "DefenderAH[0]"
+    }
+  ],
+  "style": {
+    "brandColor": "#0078D4"
+  }
+}

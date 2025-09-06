@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "Timer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "%TimerOrchestrator_Schedule%"
+    }
+  ],
+  "scriptFile": "run.ps1"
+}
