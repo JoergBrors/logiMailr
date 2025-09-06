@@ -36,14 +36,29 @@ function Get-AccessToken {
 }
 
 function Get-BlobClient {
-    # Build a simple client using Az.Storage
+    # 1) Bevorzugt: Connection String (Azulite ODER echtes Azure)
+    $cs = Get-Env -Name 'LOGIMAILR_STORAGE_CONNECTION_STRING'
+    if (-not $cs) { $cs = Get-Env -Name 'AzureWebJobsStorage' }  # Fallback auf Functions-Setting
+    if ($cs) {
+        try {
+            return New-AzStorageContext -ConnectionString $cs
+        } catch {
+            throw ('Storage: Context via ConnectionString fehlgeschlagen: {0}' -f $_.Exception.Message)
+        }
+    }
+
+    # 2) Fallback: Name/Key (nur für echtes Azure sinnvoll)
     $account = Get-Env -Name 'LOGIMAILR_STORAGE_ACCOUNT'
     $key     = Get-Env -Name 'LOGIMAILR_STORAGE_KEY'
-    if (-not $account -or -not $key) {
-        throw 'Storage account name/key not set. Configure LOGIMAILR_STORAGE_ACCOUNT / LOGIMAILR_STORAGE_KEY.'
+    if ($account -and $key) {
+        try {
+            return New-AzStorageContext -StorageAccountName $account -StorageAccountKey $key
+        } catch {
+            throw ('Storage: Context via Name/Key fehlgeschlagen: {0}' -f $_.Exception.Message)
+        }
     }
-    $ctx = New-AzStorageContext -StorageAccountName $account -StorageAccountKey $key
-    return $ctx
+
+    throw 'Storage: keine gültige Konfiguration gefunden. Setze LOGIMAILR_STORAGE_CONNECTION_STRING (empfohlen) oder LOGIMAILR_STORAGE_ACCOUNT/LOGIMAILR_STORAGE_KEY.'
 }
 
 function Get-BlobJson {

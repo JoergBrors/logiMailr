@@ -1,3 +1,8 @@
-# Runs every cold start; load shared functions
-$PSScriptRoot | Out-Null
-. "$PSScriptRoot\Shared\Utils.ps1"
+# profile.ps1 - minimal & safe
+try {
+    . "$PSScriptRoot\Shared\Utils.ps1"
+    Write-Host "[profile] Utils geladen."
+} catch {
+    Write-Host ("[profile] Fehler: {0}" -f $_.Exception.Message)
+    throw
+}
