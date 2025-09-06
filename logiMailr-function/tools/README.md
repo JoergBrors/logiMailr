@@ -29,6 +29,12 @@ Dieser Ordner enthält Hilfsdateien und PowerShell- sowie Dokumentationsskripte,
 
 - `Upload-module.ps1` — Hilfsskript, das Beispiel- oder Konfigurationsdateien in die Azurite-Container lädt (control/input/output). Enthält Beispiel-Aufrufe für `New-AzStorageContext`, `New-AzStorageContainer` und `Set-AzStorageBlobContent`.
 
+- `variables-to-azure.ps1` — Hilfsskript, das die Variablen von der local.settings.json in die Azure Funktion überträgt.
+ ```Beispiele:
+  .\variables-to-azure.ps1 -ResourceGroup MeinRG -FunctionApp MeineFunctionApp
+  .\variables-to-azure.ps1 -ResourceGroup MeinRG -FunctionApp MeineFunctionApp -DryRun
+  ```
+
 
 ### Schnellstart (lokal)
 
