@@ -31,7 +31,7 @@ function Get-AccessToken {
         $token = (Get-AzAccessToken -ResourceUrl $res).Token
         return $token
     } catch {
-        throw "Failed to acquire token for $For: $($_.Exception.Message)"
+        throw "Failed to acquire token for $For : $($_.Exception.Message)"
     }
 }
 

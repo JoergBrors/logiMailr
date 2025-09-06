@@ -5,7 +5,7 @@
 
 #Projekt Spezifisch
 local.settings.json
-
+.azurite/*
 
 # User-specific files
 *.rsuser
