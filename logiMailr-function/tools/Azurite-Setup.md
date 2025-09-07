@@ -1,41 +1,39 @@
-# Azurite – Lokales Azure Storage für logiMailr
+# Azurite — local Azure Storage for logiMailr
 
-Diese App nutzt **Azurite** für lokales Blob Storage. Offizielle Anleitung hier:  
-▶️ Microsoft Learn: *Install and run Azurite emulator* citeturn0view0
+This app uses **Azurite** for local Blob Storage. Official guidance: Microsoft Learn: Install and run Azurite emulator.
 
-## Installation (Optionen)
+## Installation (options)
 
 ### 1) Visual Studio Code (Extension)
-- In VS Code **Extensions** öffnen, nach **Azurite** suchen und installieren.  
-- Standard-Ports: **Blob 10000**, **Queue 10001**, **Table 10002**. citeturn0view0
+- Open **Extensions** in VS Code, search for **Azurite** and install it.
+- Default ports: **Blob 10000**, **Queue 10001**, **Table 10002**.
 
 ### 2) npm (Node.js)
 ```bash
 npm install -g azurite
-# Start (persistenter Speicher unter c:/azurite, Windows-Beispiel)
+# Start (persist data under c:/azurite, Windows example)
 azurite --silent --location c:\azurite --debug c:\azurite\debug.log
 ```
-(Erfordert Node.js. Alternativ `azurite -h` für Optionen.) citeturn0view0
+(Requires Node.js. Alternatively run `azurite -h` for options.)
 
 ### 3) Docker
 ```bash
-docker run -p 10000:10000 -p 10001:10001 -p 10002:10002   mcr.microsoft.com/azure-storage/azurite
+docker run -p 10000:10000 -p 10001:10001 -p 10002:10002 mcr.microsoft.com/azure-storage/azurite
 ```
-(Optional mit Volume: `-v c:/azurite:/data`) citeturn0view0
+(Optional with volume: `-v c:/azurite:/data`)
 
-## Verwendung im Projekt
+## Usage in this project
 
-- **local.settings.json** (Beispiel liegt bei) nutzt `UseDevelopmentStorage=true` für die Verbindung.  
-- Standard-Container werden beim Deployment-Script erstellt (`control`, `input`, `output`, `runs`).  
-- Für lokale Tests sind Beispiel-Module in `modules/*` enthalten.
+- `local.settings.json` (example provided) can use `UseDevelopmentStorage=true` for the connection.
+- The deployment script creates default containers (`control`, `input`, `output`, `runs`).
+- Example modules for local tests are available in `modules/*`.
 
 ## VS Code Task
 
-Im Repo liegt `.vscode/tasks.json` mit einem Task **Start Azurite (Blob/Queue/Table)**.  
-Ausführen via **Terminal → Run Task**.
+The repo contains `.vscode/tasks.json` with a task named **Start Azurite (Blob/Queue/Table)**. Run it via **Terminal → Run Task**.
 
-## Ports & Endpunkte (Default)
+## Ports & endpoints (default)
 
 - Blob: `http://127.0.0.1:10000/`
 - Queue: `http://127.0.0.1:10001/`
-- Table: `http://127.0.0.1:10002/` citeturn0view0
+- Table: `http://127.0.0.1:10002/`

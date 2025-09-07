@@ -1,46 +1,46 @@
 # logiMailr
 
-logiMailr ist eine modulare Azure Function‑Lösung in PowerShell, die aus KQL‑Abfragen automatisierte HTML‑Reports erstellt und per E‑Mail versendet.
+logiMailr is a modular Azure Functions solution written in PowerShell that generates automated HTML reports from KQL queries and sends them by email.
 
-Kurz: Das Projekt lädt JSON‑Module aus Blob Storage, führt Abfragen gegen Log Analytics / Defender Advanced Hunting aus, rendert HTML‑Templates und verschickt Ergebnisse über Microsoft Graph oder speichert sie lokal für Tests.
+In short: the project loads JSON modules from Blob Storage, runs queries against Log Analytics and Defender Advanced Hunting, renders HTML templates and either sends results via Microsoft Graph or stores them locally for testing.
 
-## Schnellstart (lokal)
+## Quickstart (local)
 
-1. Kopiere `logiMailr-function/local.settings.json.example` → `logiMailr-function/local.settings.json` und passe Werte für Storage, Workspace und Mail‑Modus an.
+1. Copy `logiMailr-function/local.settings.json.example` → `logiMailr-function/local.settings.json` and adjust storage, workspace and mail-mode settings.
 
-2. Starte Azurite oder verwende ein echtes Storage Konto.
+2. Start Azurite or use a real Storage account.
 
-3. Optional: Bootstrap der benötigten PowerShell‑Module:
+3. Optional: bootstrap required PowerShell modules:
 
    ```powershell
    .\tools\bootstrap-modules.ps1 -InstallPath .\modules
    ```
 
-4. Starte den Functions Host:
+4. Start the Functions host:
 
    ```powershell
    cd logiMailr-function
    func start
    ```
 
-## Aufbau
+## Layout
 
-- `logiMailr-function/` – Function App und Shared‑Skripte
-- `modules/` – vendored PowerShell‑Module und Beispiel‑JSON‑Module
-- `tools/` – Hilfsskripte (Bootstrap, Deploy, Azurite‑Setup)
+- `logiMailr-function/` – Function app and shared scripts
+- `modules/` – vendored PowerShell modules and example JSON modules
+- `tools/` – helper scripts (bootstrap, deploy, Azurite setup)
 
-## Sicherheit & Berechtigungen
+## Security & permissions
 
-Empfohlene Rollen/Berechtigungen für die Managed Identity:
+Recommended roles/permissions for the Function App's managed identity:
 
 - Storage: Storage Blob Data Reader
 - Log Analytics: Log Analytics Reader
 - Microsoft Graph: Mail.Send
-- Defender XDR: AdvancedHunting.Read.All (oder AdvancedQuery.Read.All)
+- Defender XDR: AdvancedHunting.Read.All (or AdvancedQuery.Read.All)
 
-Nach dem Zuweisen von Rollen die Function App neu starten.
+Restart the Function App after assigning roles.
 
-## Weiteres
+## More
 
-Siehe `logiMailr-function/readme.md` für function‑spezifische Hinweise und `logiMailr-function/tools/README-local-test.md` für lokale Testanweisungen.
+See `logiMailr-function/readme.md` for function-specific notes and `logiMailr-function/tools/README-local-test.md` for local testing instructions.
 

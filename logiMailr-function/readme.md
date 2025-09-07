@@ -1,36 +1,36 @@
 # logiMailr Function
 
-Die PowerShell Azure Function App für logiMailr lädt Module und Templates aus Blob Storage, führt KQL‑Abfragen aus und rendert E‑Mail‑Reports.
+The PowerShell Azure Function app for logiMailr loads modules and templates from Blob Storage, executes KQL queries and renders email reports.
 
-## Schnellstart (lokal)
+## Quickstart (local)
 
-1. Kopiere `local.settings.json.example` → `local.settings.json` und trage Storage‑ und Workspace‑Werte ein.
+1. Copy `local.settings.json.example` → `local.settings.json` and fill in storage and workspace values.
 
-1. Starte Azurite oder verwende ein echtes Storage Konto.
+2. Start Azurite or use a real Storage account.
 
-1. Module bootstrap (falls erforderlich):
+3. Bootstrap modules (if required):
 
 ```powershell
 .\tools\bootstrap-modules.ps1 -InstallPath .\modules
 ```
 
-1. Starte den Functions Host:
+4. Start the Functions host:
 
 ```powershell
 cd logiMailr-function
 func start
 ```
 
-## Konfiguration
+## Configuration
 
-- `local.settings.json` enthält Verbindungsdaten und Modus (`LOGIMAILR_SEND_MODE` = `File` | `Graph`).
-- `requirements.psd1` listet Module für das Vendoring.
+- `local.settings.json` contains connection values and mode (`LOGIMAILR_SEND_MODE` = `File` | `Graph`).
+- `requirements.psd1` lists modules used for vendoring.
 
-## Module & Vendoring
+## Modules & vendoring
 
-Das Repo besitzt ein `modules/`‑Verzeichnis mit vendored Modulen. `tools/bootstrap-modules.ps1` liest `requirements.psd1` und lädt fehlende Module lokal herunter.
+This repository contains a `modules/` directory with vendored modules. `tools/bootstrap-modules.ps1` reads `requirements.psd1` and downloads missing modules locally.
 
-Beispiel `requirements.psd1`:
+Example `requirements.psd1`:
 
 ```powershell
 @{
@@ -41,31 +41,31 @@ Beispiel `requirements.psd1`:
 }
 ```
 
-## Fehlerbehebung
+## Troubleshooting
 
-- "No module listed in requirements": `requirements.psd1` prüfen und Module in `ModulesToLoad` eintragen.
-- Beim Auth‑Fehler: Managed Identity‑Rollen prüfen und Function neu starten.
+- "No module listed in requirements": check `requirements.psd1` and add modules to `ModulesToLoad`.
+- Authentication errors: check managed identity roles and restart the Function.
 
-Weitere Details: `logiMailr-function/tools/README-local-test.md`.
+See `logiMailr-function/tools/README-local-test.md` for more details.
 
-## Ordnerstruktur / kurze Beschreibung der Dateien
+## Folder structure / short description of files
 
-Hier eine kurze Übersicht über die wichtigsten Ordner und Dateien im Ordner `logiMailr-function` und deren Zweck:
+A short overview of key folders and files in `logiMailr-function` and their purpose:
 
-- `.vscode/` — VS Code Arbeitsbereichs- und Task-Settings (z.B. Start-Tasks, Launch-Konfigurationen). Enthält projektspezifische Entwickler-Tasks.
-- `host.json` — Azure Functions Host-Konfiguration (Binding- und Host-bezogene Einstellungen).
-- `local.settings.json` / `local.settings.json.example` — Lokale Laufzeitkonfiguration (App-Einstellungen, Connection-Strings). `local.settings.json.example` als Vorlage kopieren und anpassen für lokale Entwicklung.
-- `modules/` — Vendored PowerShell-Module (lokal gespeicherte Module, die `tools\bootstrap-modules.ps1` aus `requirements.psd1` lädt). Wird genutzt, um Abhängigkeiten offline/gebündelt bereitzustellen.
-- `out-mail/` — Ausgabeordner für lokal gespeicherte E-Mail-HTML-Dateien (wenn `LOGIMAILR_SEND_MODE=File` gesetzt ist). Nützlich zum Testen der generierten Reports ohne echten Mailversand.
-- `package-lock.json` — Lockfile (falls Node/Tools verwendet werden); nicht zentral für die PowerShell-Function, aber kann Tasks/Tools betreffen.
-- `profile.ps1` — Optionales PowerShell-Profil/Helper für lokale Developer-Workflows (falls vorhanden).
-- `readme.md` — Diese Dokumentation (kurze Anleitung & Hinweise zum lokalen Betrieb).
-- `requirements.psd1` — Liste der benötigten PowerShell-Module (Name => Version), genutzt von `tools\bootstrap-modules.ps1` zum Vendoring.
-- `Shared/` — Gemeinsame Hilfsfunktionen und Scripts
-    - `Shared\Utils.ps1` enthält zentrale Helper (Logging, Token-Akquise, Storage-Context, KQL/Defender-Aufrufe, HTML-Renderer und Mail-Sende-Wrapper). Diese Funktionen werden von den Function-Skripten wiederverwendet.
-- `TimerOrchestrator/` — Die eigentliche Timer-Function
-    - `TimerOrchestrator\function.json` definiert das Timer-Binding (Schedule via `%TimerOrchestrator_Schedule%`, `runOnStartup`).
-    - `TimerOrchestrator\run.ps1` ist das Haupt-Skript der Function: lädt Control-Module aus Blob Storage, führt die konfigurierten Quellen (LogAnalytics, Defender AH) aus, rendert HTML-Reports und versendet oder speichert diese.
-- `tools/` — Hilfs-Skripte für Entwicklung & Deployment (z. B. `Start-Azurite.ps1`, `bootstrap-modules.ps1`, `Deploy-AzFunction.ps1`, `debug-AzFunctionLocaly.ps1`). Sie enthalten Setup-, Debug- und Deploy-Hilfen; siehe `tools/README.md` für Details.
+- `.vscode/` — VS Code workspace and task settings (e.g. start tasks, launch configurations). Contains project-specific developer tasks.
+- `host.json` — Azure Functions host configuration (binding and host-level settings).
+- `local.settings.json` / `local.settings.json.example` — Local runtime configuration (app settings, connection strings). Copy `local.settings.json.example` and adapt it for local development.
+- `modules/` — Vendored PowerShell modules (locally stored modules that `tools\bootstrap-modules.ps1` downloads based on `requirements.psd1`). Used to provide dependencies offline/bundled.
+- `out-mail/` — Output folder for locally saved email HTML files (when `LOGIMAILR_SEND_MODE=File`). Useful for testing generated reports without sending real emails.
+- `package-lock.json` — Lockfile (if Node/tools are used); not central to the PowerShell function but may affect tasks/tools.
+- `profile.ps1` — Optional PowerShell profile/helper for local developer workflows (if present).
+- `readme.md` — This documentation (quick guide & notes for local use).
+- `requirements.psd1` — List of required PowerShell modules (Name => Version), used by `tools\bootstrap-modules.ps1` for vendoring.
+- `Shared/` — Shared helper functions and scripts
+  - `Shared\Utils.ps1` contains core helpers (logging, token acquisition, storage context, KQL/Defender calls, HTML renderer and mail-sending wrapper). These functions are reused by the function scripts.
+- `TimerOrchestrator/` — The timer-triggered function
+  - `TimerOrchestrator\function.json` defines the timer binding (schedule via `%TimerOrchestrator_Schedule%`, `runOnStartup`).
+  - `TimerOrchestrator\run.ps1` is the main function script: it loads control modules from Blob Storage, runs configured sources (Log Analytics, Defender AH), renders HTML reports and sends or stores them.
+- `tools/` — Helper scripts for development & deployment (e.g. `Start-Azurite.ps1`, `bootstrap-modules.ps1`, `Deploy-AzFunction.ps1`, `debug-AzFunctionLocaly.ps1`). See `tools/README.md` for details.
 
-Diese Liste deckt die Dateien ab, die für Entwicklung, lokales Testen und Deployment am relevantesten sind. Wenn Du möchtest, kann ich die Beschreibungen erweitern (z. B. typische Parameter für `Deploy-AzFunction.ps1`, Beispiele für `local.settings.json`, oder eine kurze Bedienungsanleitung für `tools/debug-AzFunctionLocaly.ps1`).
+This list covers files most relevant for development, local testing and deployment. If you like, I can expand the descriptions (for example parameter examples for `Deploy-AzFunction.ps1`, sample `local.settings.json` content, or a short guide for using `tools/debug-AzFunctionLocaly.ps1`).

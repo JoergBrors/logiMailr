@@ -1,72 +1,67 @@
-## tools — Übersicht, Dateien und kurze Nutzungshinweise
+## tools — overview, files and quick usage notes
 
-Dieser Ordner enthält Hilfsdateien und PowerShell- sowie Dokumentationsskripte, die beim lokalen Entwickeln, Testen und Deployen der Function App unterstützt werden. Nachfolgend eine kurze, deutsche Beschreibung jeder Datei im Ordner `tools`.
+This folder contains helper files and PowerShell scripts used for local development, testing and deployment of the Function App. Below is a short English description of each file in the `tools` folder.
 
-### Dateien und Zweck
+### Files and purpose
 
-- `Azurite-Setup.md` — Anleitung zum Installieren und Starten von Azurite (lokaler Azure Storage Emulator). Beschreibt Installationsoptionen (VS Code Extension, npm, Docker), Standard-Ports und Hinweise zur Verwendung mit `local.settings.json`.
+- `Azurite-Setup.md` — Instructions for installing and starting Azurite (local Azure Storage emulator). Describes installation options (VS Code extension, npm, Docker), default ports and guidance on using it with `local.settings.json`.
 
-- `bootstrap-modules.ps1` — Bootstrapt benötigte PowerShell-Module in den lokalen `modules/`-Ordner. Liest `requirements.psd1`, lädt Module per `Save-Module` und unterstützt `-Force` sowie Wildcard-Versionen. Nutzung:
+- `bootstrap-modules.ps1` — Bootstraps required PowerShell modules into the local `modules/` folder. Reads `requirements.psd1`, downloads modules using `Save-Module` and supports `-Force` and wildcard versions. Usage:
   ```powershell
   .\bootstrap-modules.ps1 -Force -ModulePath modules
   ```
 
-- `debug-AzFunctionLocaly.ps1` — Startet die Function App lokal im Debug-Modus. Stellt Umgebungsvariablen für den PowerShell-Worker, kann Azurite starten, Timer-Schedule auf schnell (FastCron) setzen und `runOnStartup` aktivieren. Nützlich für lokales Debugging mit VS Code.
+- `debug-AzFunctionLocaly.ps1` — Starts the Function App locally in debug mode. Sets environment variables for the PowerShell worker, can start Azurite, set a fast timer schedule (FastCron) and enable `runOnStartup`. Useful for local debugging with VS Code.
 
-- `Deploy-AzFunction.ps1` — Deployment-Skript für Azure (PowerShell). Erstellt Resource Group, Storage Account, Function App, Blob-Container und App-Settings; führt Zip-Deploy durch und weist Managed Identity passende Rollen zu. Erwartet Parameter wie `ProjectPath`, `ResourceGroup`, `Location`, `FunctionAppName`.
+- `Deploy-AzFunction.ps1` — Deployment script for Azure (PowerShell). Creates resource group, storage account, Function App, blob containers and app settings; performs zip-deploy and assigns roles to the managed identity. Expects parameters like `ProjectPath`, `ResourceGroup`, `Location`, `FunctionAppName`.
 
-- `diag_simple.ps1` — (leer) Platzhalter für einfache Diagnose-Skripte; derzeit keine Inhalte. Kann bei Bedarf erweitert werden, um lokale Diagnose und Logging aufzunehmen.
+- `diag_simple.ps1` — (empty) placeholder for simple diagnostics scripts; currently no content. Can be extended to collect local diagnostics and logs.
 
-- `reset-test.ps1` — Hilfsskript zum Zurücksetzen der Testumgebung: versucht, lokale Azurite/Node-Prozesse zu beenden, löscht temporäre Diagnose-Dateien unter `tools/` und entfernt prozessweite Umgebungsvariablen (nur für den aktuellen Prozess). Gut vor einem neuen Testlauf.
+- `reset-test.ps1` — Helper script to reset the test environment: attempts to stop local Azurite/Node processes, deletes transient diagnostic files under `tools/` and clears process-level environment variables (only for the current process). Useful before running a fresh test.
 
-- `set-Defenderpermissonscope.ps1` — Skript, das Berechtigungen (App-Rollen / AppRoleAssignments) über Microsoft Graph für die registrierte Anwendung/Mandanten verwalten kann. Unterstützt App-Only-Auth (AZ_CLIENT_* Umgebungsvariablen), DryRun und Report-Ausgabe. Nutzt `Microsoft.Graph`-Cmdlets.
+- `set-Defenderpermissonscope.ps1` — Script that manages permissions (app roles / appRoleAssignments) via Microsoft Graph for the registered application/tenant. Supports app-only auth (AZ_CLIENT_* env vars), DryRun and report output. Uses `Microsoft.Graph` cmdlets.
 
-- `Start-Azurite-Alt.ps1` — Startet Azurite mit alternativen (nicht-standard) Ports. Parameter: `Location`, `BlobPort`, `QueuePort`, `TablePort`. Für Fälle, in denen Standard-Ports belegt sind.
+- `Start-Azurite-Alt.ps1` — Starts Azurite on alternative (non-standard) ports. Parameters: `Location`, `BlobPort`, `QueuePort`, `TablePort`. For cases where default ports are occupied.
 
-- `Start-Azurite.ps1` — Startet Azurite mit Standard-Ports (10000/10001/10002). Legt lokalen Speicherort an (Standard `C:\azurite`) und startet `azurite --silent --location ...`.
+- `Start-Azurite.ps1` — Starts Azurite on default ports (10000/10001/10002). Creates the local storage folder (default `C:\azurite`) and calls `azurite --silent --location ...`.
 
-- `start-withoutEmulator.ps1` — Startet die Timer-Function lokal ohne Storage-Emulator; lädt `local.settings.json` als Umgebungsvariablen, lädt `Shared\Utils.ps1` und führt `TimerOrchestrator\run.ps1` lokal aus. Nützlich, um Funktionalität ohne Azurite zu testen.
+- `start-withoutEmulator.ps1` — Runs the timer function locally without a storage emulator: loads `local.settings.json` into environment variables, sources `Shared\Utils.ps1` and executes `TimerOrchestrator\run.ps1`. Useful to test logic without Azurite.
 
-- `Upload-module.ps1` — Hilfsskript, das Beispiel- oder Konfigurationsdateien in die Azurite-Container lädt (control/input/output). Enthält Beispiel-Aufrufe für `New-AzStorageContext`, `New-AzStorageContainer` und `Set-AzStorageBlobContent`.
+- `Upload-module.ps1` — Helper script that uploads example or configuration files to Azurite containers (control/input/output). Contains example calls to `New-AzStorageContext`, `New-AzStorageContainer` and `Set-AzStorageBlobContent`.
 
-- `variables-to-azure.ps1` — Hilfsskript, das die Variablen von der local.settings.json in die Azure Funktion überträgt.
- ```Beispiele:
-  .\variables-to-azure.ps1 -ResourceGroup MeinRG -FunctionApp MeineFunctionApp
-  .\variables-to-azure.ps1 -ResourceGroup MeinRG -FunctionApp MeineFunctionApp -DryRun
-  ```
+- `variables-to-azure.ps1` — Helper script that transfers variables from `local.settings.json` into the Azure Function App as App Settings.
 
+### Quickstart (local)
 
-### Schnellstart (lokal)
+1. If not installed already: start Azurite (see `Azurite-Setup.md` or `Start-Azurite.ps1`).
 
-1. Falls noch nicht installiert: Azurite starten (siehe `Azurite-Setup.md` oder `Start-Azurite.ps1`).
+2. Copy `local.settings.json.example` to `local.settings.json` and adjust values.
 
-2. Kopiere `local.settings.json.example` nach `local.settings.json` und passe Werte an.
-
-3. Module installieren (falls nötig):
+3. Install modules (if needed):
   ```powershell
   Set-Location ..\logiMailr-function
   .\tools\bootstrap-modules.ps1 -ModulePath modules
   ```
 
-4. Optional: Beispiel-Blobs in Azurite hochladen:
+4. Optional: upload example blobs to Azurite:
   ```powershell
   .\tools\Upload-module.ps1
   ```
 
-5. Function Host starten (normal):
+5. Start the Function host (normal):
   ```powershell
   func host start
   ```
-  Oder für Debug mit helpers:
+  Or for debugging with helpers:
   ```powershell
   .\tools\debug-AzFunctionLocaly.ps1 -StartAzurite -FastCron -RunOnStartup
   ```
 
-### Hinweise
-- Viele Tools erwarten PowerShell 7.x, die Azure PowerShell-Module (`Az.*`) und die Azure Functions Core Tools (`func`).
-- `set-Defenderpermissonscope.ps1` benötigt `Microsoft.Graph`-Module und ggf. App-Only-Credentials.
-- `diag_simple.ps1` ist derzeit leer und kann bei Bedarf befüllt werden.
+### Notes
+- Many tools expect PowerShell 7.x, the Azure PowerShell modules (`Az.*`) and the Azure Functions Core Tools (`func`).
+- `set-Defenderpermissonscope.ps1` requires `Microsoft.Graph` modules and possibly app-only credentials.
+- `diag_simple.ps1` is currently empty and can be populated if needed.
 
-Wenn du möchtest, kann ich die README noch um Beispiele für Parameter und typische Fehlerfälle erweitern, oder die einzelnen Skripte kommentieren. 
+If you want, I can expand the README with parameter examples, common error scenarios, or inline comments for specific scripts.
 
-Hinweis: Bei Problemen mit fehlenden Modulen `tools\bootstrap-modules.ps1` mit `-Verbose` ausführen und `requirements.psd1` prüfen.
+Note: if you encounter missing modules, run `tools\bootstrap-modules.ps1 -Verbose` and verify `requirements.psd1`.
